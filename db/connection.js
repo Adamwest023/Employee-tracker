@@ -8,8 +8,8 @@ const db = mysql.createConnection(
         //Your MySQL username,
         user: 'root',
         //your MySQL password
-        password: '',
-        database: 'election'
+        password: 'Adam1404',
+        database: 'employee'
     });
 
 module.exports = db;
