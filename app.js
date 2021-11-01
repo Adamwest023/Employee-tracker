@@ -9,8 +9,11 @@ const cTable = require('console.table');
 //call database
 const db = require('./db/connection');
 
+// call routes
+const employeeRoutes = require('./routes/apiRoutes/employeeRoutes');
+
 //adds a port designation
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 //adds the app expression
 const app = express();
@@ -34,7 +37,8 @@ const mainMenu = () => {
         }
     ]).then(({ choice }) => {
         if (choice == 'View all employees') {
-            `SELECT * FROM employee`
+            employeeRoutes.getEmployees();
+            mainMenu();
         }
         if (choice == "View all employees by Department") {
             selectDepartment()
@@ -72,6 +76,9 @@ const selectDepartment = () => {
     })
 
 }
+
+//view employee table
+
 
 //Select employee with a certain manager
 const selectManager = () => {
@@ -114,6 +121,7 @@ const addEmployee = () => {
         }
     ]).then(answers => {
         const employee = new employee(answers.firstName, answers.lastName, answers.role)
+        mainMenu();
     })
 }
 
@@ -125,3 +133,6 @@ db.connect(err => {
         console.log(`Server running on port ${PORT}`);
     });
 });
+
+
+mainMenu();
