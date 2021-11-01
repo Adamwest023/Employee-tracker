@@ -32,9 +32,9 @@ exports.getRoles = () => {
 
 
 //route to add a department
-exports.addDepartment = () => {
+exports.addDepartment = async () => {
     //runs our prompt to ask for what department would like to be added
-    inquirer.prompt([
+    return inquirer.prompt([
         {
             type: 'input',
             message: 'What is the department you would like to add?',
@@ -76,7 +76,7 @@ exports.addRole = async () => {
         })
     });
 
-    inquirer.prompt([
+    return inquirer.prompt([
         {
             type: "input",
             name: "role",
@@ -133,7 +133,7 @@ exports.addEmployee = async () => {
         })
     });
     // prompts for what will be asked about the employee
-    inquirer.prompt([
+    return inquirer.prompt([
         {
             type: "input",
             name: 'first_name',
@@ -159,18 +159,18 @@ exports.addEmployee = async () => {
     ]).then(answers => {
         // console.log(answers.first_name, answers.last_name, answers.role, answers.manager_id);
         if (answers.first_name == " " || answers.first_name == 0 || answers.last_name == " " ||
-        answers.last_name == 0) {
+            answers.last_name == 0) {
             console.log("Answers are not valid please try again")
             return this.addEmployee();
         }
 
         const sql = ` INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`
 
-        db.query(sql,[answers.first_name, answers.last_name, answers.role, answers.manager_id], (err,data) => {
+        db.query(sql, [answers.first_name, answers.last_name, answers.role, answers.manager_id], (err, data) => {
             if (err) {
                 console.log(err.message)
             }
-            console.log(cTable.getTable(`The employee ${answers.first_name} ${answers.last_name} has been added!`));  
+            console.log(cTable.getTable(`The employee ${answers.first_name} ${answers.last_name} has been added!`));
         });
     });
 };
@@ -182,10 +182,10 @@ function employeeSearch() {
 
 
 // update an employee's role
-exports.updateRole =  async () => {
+exports.updateRole = async () => {
     //calls added role function
     const employee = await employeeSearch();
-    const title = await roleSearch() 
+    const title = await roleSearch()
 
     //parses into a json file for employees
     const parsedEmp = Object.values(JSON.parse(JSON.stringify(employee[0])));
@@ -209,27 +209,26 @@ exports.updateRole =  async () => {
         })
     });
     //prompts for picking an employee and changing their role
-    inquirer.prompt([      
+    return inquirer.prompt([
         {
             type: "list",
             choices: structuredArr,
             message: "Which Employee would you like to update?",
-            name:"employee_id"
+            name: "employee_id"
         },
         {
-            type:"list",
+            type: "list",
             choices: structuredRoleArr,
             message: "What would you like to update the role to?",
             name: "new_role"
         }
     ]).then(answers => {
-        console.log(answers.employee_id, answers.new_role);
-
+        //updates the employee role using the role_id on the employee table
         const sql = "UPDATE employee SET role_id =? WHERE id = ?"
-        db.query(sql, [answers.new_role, answers.employee_id], (err,data) => {
-            if(err) throw err
+        db.query(sql, [answers.new_role, answers.employee_id], (err, data) => {
+            if (err) throw err
             console.log("Employee updated")
-            
+
         })
 
     })

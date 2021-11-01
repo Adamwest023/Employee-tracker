@@ -54,21 +54,26 @@ const mainMenu = () => {
             mainMenu();
         }
         if (choice == "Add department") {
-            employeeRoutes.addDepartment();
-            // mainMenu();
+            const display = await employeeRoutes.addDepartment();
+            console.table(display)
+            mainMenu();
         }
         if (choice == "Add role") {
-            employeeRoutes.addRole();
-            // mainMenu();
+            const display = await employeeRoutes.addRole();
+            console.table(display)
+            mainMenu();
         }
         if (choice == "Add employee") {
-            employeeRoutes.addEmployee();
+            const display = await employeeRoutes.addEmployee();
+            console.table(display)
+            mainMenu();
         }
         if (choice == "Update an employee role") {
-            employeeRoutes.updateRole();
+            const display = await employeeRoutes.updateRole();
+            console.table(display)
+            mainMenu();
         }
-    })
-    // mainMenu();
+    });
 };
 
 //starts the express.js on port 3001
