@@ -11,6 +11,7 @@ const db = require('./db/connection');
 
 // call routes
 const employeeRoutes = require('./routes/apiRoutes/employeeRoutes');
+const exp = require('constants');
 
 //adds a port designation
 const PORT = process.env.PORT || 3002;
@@ -28,8 +29,8 @@ const mainMenu = () => {
             name: 'choice',
             choices: [
                 'View all employees',
-                "View all employees by Department",
-                "View all employees by Manager",
+                "View all roles",
+                "View all departments",
                 "Add Employee",
                 "Remove Employee",
                 "Update Employee by Department",
@@ -40,11 +41,13 @@ const mainMenu = () => {
             employeeRoutes.getEmployees();
             mainMenu();
         }
-        if (choice == "View all employees by Department") {
-            selectDepartment()
+        if (choice == "View all roles") {
+            employeeRoutes.getRoles()
+            mainMenu();
         }
-        if (choice == "View all employees by Manager") {
-            selectManager()
+        if (choice == "View all departments") {
+            employeeRoutes.getDepartment()
+            mainMenu();
         }
         if (choice == "Add Employee") {
             addEmployee()
@@ -58,40 +61,6 @@ const mainMenu = () => {
         if ("Update Employee by Manager") {
             updateManager()
         }
-    })
-};
-
-//Selecting employee from a certain department 
-const selectDepartment = () => {
-    inquirer.prompt([
-        {
-            type: 'list',
-            message: 'What department are you looking for?',
-            name: 'department_id',
-            choices: ['IT', 'sales', 'marketing', 'recruiting'],
-        }
-    ]).then(({ choice }) => {
-        choice.department_id
-        mainMenu();
-    })
-
-}
-
-//view employee table
-
-
-//Select employee with a certain manager
-const selectManager = () => {
-    inquirer.prompt([
-        {
-            type: 'list',
-            message: 'What manager are you looking for',
-            name: 'manager_id',
-            choices: ['']
-        }
-    ]).then(({ choice }) => {
-        choice.manager_id
-        mainMenu();
     })
 };
 
@@ -121,6 +90,7 @@ const addEmployee = () => {
         }
     ]).then(answers => {
         const employee = new employee(answers.firstName, answers.lastName, answers.role)
+        
         mainMenu();
     })
 }
