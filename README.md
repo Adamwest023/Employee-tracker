@@ -11,7 +11,7 @@ download the repo from github and run an npm install to get all the packages nee
 ## Usage 
 
 Once you have downloaded the packages and began running through the prompts you will be asked a series of questions that will allow you to various things such as view employees, add employees, and update. 
-![alt text](assets/images/screenshot.png)
+![Video tutorial](assets/video/Employee-tracker-walkthrough.mov)
 ```
 
 
