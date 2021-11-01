@@ -6,6 +6,7 @@ const cTable = require('console.table');
 // creates connections with the db and util folder
 const db = require('../../db/connection.js');
 const { log } = require('console');
+const { number } = require('easy-table');
 
 //route that get to all employee
 exports.getEmployees = () => {
@@ -122,17 +123,16 @@ exports.addEmployee = async () => {
     //calls added role function
     const title = await roleSearch();
     //parses into a json file
-    const parsedDept = Object.values(JSON.parse(JSON.stringify(title[0])));
+    const parsedRole = Object.values(JSON.parse(JSON.stringify(title[0])));
     //restructures into an array 
     const structuredArr = []
-    parsedDept.forEach(index => {
+    parsedRole.forEach(index => {
         structuredArr.push({
             name: index.title,
             value: index.id
         })
     });
-  
-
+    // prompts for what will be asked about the employee
     inquirer.prompt([
         {
             type: "input",
@@ -145,6 +145,7 @@ exports.addEmployee = async () => {
             message: " What is the employee's last name?"
         },
         {
+            //uses the updated roles to make picking from roles easier
             type: "list",
             name: "role",
             choices: structuredArr,
@@ -156,20 +157,80 @@ exports.addEmployee = async () => {
             message: "what is the employee's manager's id"
         }
     ]).then(answers => {
-        console.log(answers.first_name, answers.last_name, answers.role, answers.manager_id);
+        // console.log(answers.first_name, answers.last_name, answers.role, answers.manager_id);
         if (answers.first_name == " " || answers.first_name == 0 || answers.last_name == " " ||
         answers.last_name == 0) {
             console.log("Answers are not valid please try again")
             return this.addEmployee();
         }
+
         const sql = ` INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`
 
         db.query(sql,[answers.first_name, answers.last_name, answers.role, answers.manager_id], (err,data) => {
             if (err) {
                 console.log(err.message)
             }
-            console.log(cTable.getTable(`The employee ${answers.first_name} has been added!`));  
-        })
-    })
+            console.log(cTable.getTable(`The employee ${answers.first_name} ${answers.last_name} has been added!`));  
+        });
+    });
+};
 
+//function to look for employees 
+function employeeSearch() {
+    return db.promise().query(`SELECT * FROM employee`)
+}
+
+
+// update an employee's role
+exports.updateRole =  async () => {
+    //calls added role function
+    const employee = await employeeSearch();
+    const title = await roleSearch() 
+
+    //parses into a json file for employees
+    const parsedEmp = Object.values(JSON.parse(JSON.stringify(employee[0])));
+    //restructures into an array 
+    const structuredArr = []
+    parsedEmp.forEach(index => {
+        structuredArr.push({
+            name: index.first_name,
+            value: index.id
+        })
+    });
+
+    //parses into a json  Role file
+    const parsedRole = Object.values(JSON.parse(JSON.stringify(title[0])));
+    //restructures into an array 
+    const structuredRoleArr = []
+    parsedRole.forEach(index => {
+        structuredRoleArr.push({
+            name: index.title,
+            value: index.id
+        })
+    });
+    //prompts for picking an employee and changing their role
+    inquirer.prompt([      
+        {
+            type: "list",
+            choices: structuredArr,
+            message: "Which Employee would you like to update?",
+            name:"employee_id"
+        },
+        {
+            type:"list",
+            choices: structuredRoleArr,
+            message: "What would you like to update the role to?",
+            name: "new_role"
+        }
+    ]).then(answers => {
+        console.log(answers.employee_id, answers.new_role);
+
+        const sql = "UPDATE employee SET role_id =? WHERE id = ?"
+        db.query(sql, [answers.new_role, answers.employee_id], (err,data) => {
+            if(err) throw err
+            console.log("Employee updated")
+            
+        })
+
+    })
 }

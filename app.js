@@ -33,7 +33,8 @@ const mainMenu = () => {
                 "View all departments",
                 "Add department",
                 "Add role",
-                "Add employee"
+                "Add employee",
+                "Update an employee role"
             ]
         }
     ]).then(async ({ choice }) => {
@@ -48,7 +49,7 @@ const mainMenu = () => {
             mainMenu();
         }
         if (choice == "View all departments") {
-            const display =  await employeeRoutes.getDepartment()
+            const display = await employeeRoutes.getDepartment()
             console.table(display[0])
             mainMenu();
         }
@@ -60,43 +61,15 @@ const mainMenu = () => {
             employeeRoutes.addRole();
             // mainMenu();
         }
-        if ("Add employee") {
-            employeeRoutes.addEmployee()
+        if (choice == "Add employee") {
+            employeeRoutes.addEmployee();
+        }
+        if (choice == "Update an employee role") {
+            employeeRoutes.updateRole();
         }
     })
     // mainMenu();
 };
-
-//Add employee
-const addEmployee = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'firstName',
-            message: "What is your first name?"
-        },
-        {
-            type: "input",
-            name: 'lastName',
-            message: "What is your last name?"
-        },
-        {
-            type: "list",
-            name: "role",
-            message: "What is the employee's role?",
-            choices: ['engineer',
-                'sales associate',
-                'graphic designer',
-                'recruiter',
-                'jr sales associate',
-                'senior engineer']
-        }
-    ]).then(answers => {
-        const employee = new employee(answers.firstName, answers.lastName, answers.role)
-        console.log(employee)
-        mainMenu();
-    })
-}
 
 //starts the express.js on port 3001
 db.connect(err => {
