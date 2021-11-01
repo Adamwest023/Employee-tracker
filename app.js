@@ -60,9 +60,9 @@ const mainMenu = () => {
             employeeRoutes.addRole();
             // mainMenu();
         }
-        // if ("Update Employee by Manager") {
-        //     employeeRoutes.addEmployee()
-        // }
+        if ("Add employee") {
+            employeeRoutes.addEmployee()
+        }
     })
     // mainMenu();
 };
