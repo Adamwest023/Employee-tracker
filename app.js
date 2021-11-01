@@ -31,37 +31,40 @@ const mainMenu = () => {
                 'View all employees',
                 "View all roles",
                 "View all departments",
-                "Add Employee",
-                "Remove Employee",
-                "Update Employee by Department",
-                "Update Employee by Manager"]
+                "Add department",
+                "Add role",
+                "Add employee"
+            ]
         }
-    ]).then(({ choice }) => {
+    ]).then(async ({ choice }) => {
         if (choice == 'View all employees') {
-            employeeRoutes.getEmployees();
+            const display = await employeeRoutes.getEmployees()
+            console.table(display[0])
             mainMenu();
         }
         if (choice == "View all roles") {
-            employeeRoutes.getRoles()
+            const display = await employeeRoutes.getRoles()
+            console.table(display[0])
             mainMenu();
         }
         if (choice == "View all departments") {
-            employeeRoutes.getDepartment()
+            const display =  await employeeRoutes.getDepartment()
+            console.table(display[0])
             mainMenu();
         }
-        if (choice == "Add Employee") {
-            addEmployee()
+        if (choice == "Add department") {
+            employeeRoutes.addDepartment();
+            // mainMenu();
         }
-        if (choice == "Remove Employee") {
-            removeEmployee()
+        if (choice == "Add role") {
+            employeeRoutes.addRole();
+            // mainMenu();
         }
-        if (choice == "Update Employee by Department") {
-            updateDepartment()
-        }
-        if ("Update Employee by Manager") {
-            updateManager()
-        }
+        // if ("Update Employee by Manager") {
+        //     employeeRoutes.addEmployee()
+        // }
     })
+    // mainMenu();
 };
 
 //Add employee
@@ -90,7 +93,7 @@ const addEmployee = () => {
         }
     ]).then(answers => {
         const employee = new employee(answers.firstName, answers.lastName, answers.role)
-        
+        console.log(employee)
         mainMenu();
     })
 }
